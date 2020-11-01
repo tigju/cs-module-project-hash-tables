@@ -19,6 +19,7 @@ class LinkedList:
         while curr:
             curStr += f"{str(curr.value)} -> "
             curr = curr.next
+        curStr += "\n"
         return curStr
     
     def insert_at_head(self, node):
@@ -78,14 +79,14 @@ class HashTable:
     def __init__(self, capacity):
 
         self.capacity = capacity    
-        self.storage = [None for i in range(self.capacity)]
+        self.storage = [None]*self.capacity
         self.count = 0
 
     def __repr__(self):
         curStr = ""
         curr = self.storage
         for i, v in enumerate(curr):
-            curStr += f"index: {str(i)} value: {str(v)} ;"
+            curStr += f" index: {str(i)} value: {str(v)} "
         return curStr
 
     def get_num_slots(self):
@@ -154,6 +155,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity*self.capacity)
+
         index = self.hash_index(key)
         node = HashTableEntry(key, value)
         list_position = self.storage[index]
@@ -178,10 +182,14 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        if self.get_load_factor() <= 0.20:
+            self.downsize(self.capacity//2)
+
         index = self.hash_index(key)
         ll = self.storage[index]
         if ll.find(key) is not None:
             self.count -= 1
+
         return ll.delete(key)
 
 
@@ -194,9 +202,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        
         index = self.hash_index(key)
         ll = self.storage[index]
-        return ll.find(key)
+        if ll is not None:
+            return ll.find(key)
 
 
     def resize(self, new_capacity):
@@ -207,8 +217,31 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        pass
+        # old_capacity = self.capacity
+        self.capacity = new_capacity
+        old_storage = self.storage
+        self.storage = [None] * self.capacity
+        for i in range(len(old_storage)):
+            if old_storage[i] is not None:
+                curr = old_storage[i].head
+                while curr is not None:
+                    self.put(curr.key, curr.value)
+                    curr = curr.next
 
+    def downsize(self, new_capacity):
+        """
+        Shrinks the capacity of the hash table and
+        rehashes all key/value pairs.
+        """
+        self.capacity = new_capacity
+        old_storage = self.storage
+        self.storage = [None] * self.capacity
+        for i in range(len(old_storage)):
+            if old_storage[i] is not None:
+                curr = old_storage[i].head
+                while curr is not None:
+                    self.put(curr.key, curr.value)
+                    curr = curr.next
 
 
 '''
@@ -343,39 +376,61 @@ end of hashtable no collision
 '''
 
 if __name__ == "__main__":
-#     # ht = HashTable(8)
 
-#     # ht.put("line_1", "'Twas brillig, and the slithy toves")
-#     # ht.put("line_2", "Did gyre and gimble in the wabe:")
-#     # ht.put("line_3", "All mimsy were the borogoves,")
-#     # ht.put("line_4", "And the mome raths outgrabe.")
-#     # ht.put("line_5", '"Beware the Jabberwock, my son!')
-#     # ht.put("line_6", "The jaws that bite, the claws that catch!")
-#     # ht.put("line_7", "Beware the Jubjub bird, and shun")
-#     # ht.put("line_8", 'The frumious Bandersnatch!"')
-#     # ht.put("line_9", "He took his vorpal sword in hand;")
-#     # ht.put("line_10", "Long time the manxome foe he sought--")
-#     # ht.put("line_11", "So rested he by the Tumtum tree")
-#     # ht.put("line_12", "And stood awhile in thought.")
+    ht = HashTable(50)
+    print(ht.get_num_slots())
+    # ht.downsize(ht.capacity//2)
+    # print(ht.get_num_slots())
+    ht.put("line_1", "'Twas brillig, and the slithy toves")
+    ht.put("line_2", "Did gyre and gimble in the wabe:")
+    ht.put("line_3", "All mimsy were the borogoves,")
+    ht.put("line_4", "And the mome raths outgrabe.")
+    ht.put("line_5", '"Beware the Jabberwock, my son!')
+    ht.put("line_6", "The jaws that bite, the claws that catch!")
+    ht.put("line_7", "Beware the Jubjub bird, and shun")
+    ht.put("line_8", 'The frumious Bandersnatch!"')
+    ht.put("line_9", "He took his vorpal sword in hand;")
+    ht.put("line_10", "Long time the manxome foe he sought--")
+    ht.put("line_11", "So rested he by the Tumtum tree")
+    ht.put("line_12", "And stood awhile in thought.")
+    print(ht.get_num_slots())
+    print(ht.get_load_factor())
+    print(len(ht.storage))
+    print("-------------------------------------------------------------")
+    print("")
 
-#     print("")
 
 #     # Test storing beyond capacity
-#     # for i in range(1, 13):
-#     #     print(ht.get(f"line_{i}"))
+    # for i in range(1, 13):
+    #     print(ht.get(f"line_{i}"))
 
-#     # # Test resizing
-#     # old_capacity = ht.get_num_slots()
-#     # ht.resize(ht.capacity * 2)
-#     # new_capacity = ht.get_num_slots()
+    # Test resizing
+    # old_capacity = ht.get_num_slots()
+    # ht.resize(ht.capacity * 2)
+    # new_capacity = ht.get_num_slots()
 
-#     # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-#     # # Test if data intact after resizing
-#     # for i in range(1, 13):
-#     #     print(ht.get(f"line_{i}"))
+    # # Test if data intact after resizing
+    # for i in range(1, 13):
+    #     print(ht.get(f"line_{i}"))
 
-#     # print("")
+    # print(ht)
+
+    # Test downsize
+    # old_capacity = ht.get_num_slots()
+
+    # ht.downsize(ht.capacity//2)
+    # new_capacity = ht.get_num_slots()
+
+
+    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    # print(ht.get_num_slots())
+    # Test if data intact after resizing
+    # for i in range(1, 13):
+    #     print(ht.get(f"line_{i}"))
+
+    # print(ht)
 
 #     # hat = HashTable(8)
 #     # print(hat.hash_index("cat"))
@@ -416,20 +471,20 @@ if __name__ == "__main__":
 
 #     # print(ll)
 
-    ht = HashTable(8)
+    # ht = HashTable(8)
 
-    ht.put("key-0", "val-0")
-    ht.put("key-1", "val-1")
-    ht.put("key-2", "val-2")
-    ht.put("key-3", "val-3")
-    ht.put("key-4", "val-4")
-    ht.put("key-5", "val-5")
-    ht.put("key-6", "val-6")
-    ht.put("key-7", "val-7")
-    ht.put("key-8", "val-8")
-    ht.put("key-9", "val-9")
+    # ht.put("key-0", "val-0")
+    # ht.put("key-1", "val-1")
+    # ht.put("key-2", "val-2")
+    # ht.put("key-3", "val-3")
+    # ht.put("key-4", "val-4")
+    # ht.put("key-5", "val-5")
+    # ht.put("key-6", "val-6")
+    # ht.put("key-7", "val-7")
+    # ht.put("key-8", "val-8")
+    # ht.put("key-9", "val-9")
 
-    print(ht.get("key-0"))
+    # print(ht.get("key-0"))
 
-    ht.put("key-0", "new-val-0")
-    print(ht.get("key-0"))
+    # ht.put("key-0", "new-val-0")
+    # print(ht.get("key-0"))
