@@ -1,6 +1,17 @@
-def word_count(s):
-    # Your code here
 
+def word_count(s):
+    # Your code 
+    no_punct = "".join(c for c in s if c not in ("?", ".", ";", ":", "!", ",", '"',
+                                                 "-", "+", "=", "/", "\\", "|", "[", "]", "{", "}", "(", ")", "*", "^", "&"))
+    arr = no_punct.lower().split()
+    d = {}
+
+    for word in arr:
+        if word in d:
+            d[word] += 1
+        else:
+            d[word] = 1
+    return d
 
 
 if __name__ == "__main__":
