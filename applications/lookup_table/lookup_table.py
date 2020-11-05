@@ -34,6 +34,7 @@ def slowfun(x, y):
         v %= 982451653
 
         lookup_table[x_y] = v
+        
         return lookup_table[x_y]
 
 
