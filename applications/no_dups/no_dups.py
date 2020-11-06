@@ -1,5 +1,14 @@
 def no_dups(s):
     # Your code here
+    no_duplicates = []
+    splited_s = s.split()
+    for word in splited_s:
+        if word not in no_duplicates:
+            no_duplicates.append(word)
+        else:
+            continue
+    no_dup_string = " ".join(no_duplicates)
+    return no_dup_string
 
 
 
